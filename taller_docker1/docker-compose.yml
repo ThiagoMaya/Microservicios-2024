@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  servidor:
+    build: ./servidor  # Ruta al directorio del servidor donde se encuentra el Dockerfile
+    ports:
+      - "8080:8080"  # Mapeo del puerto del contenedor al puerto del host
+
+  cliente:
+    build: ./cliente  # Ruta al directorio del cliente donde se encuentra el Dockerfile
+    depends_on:
+      - servidor  # Espera a que el servicio del servidor esté en funcionamiento antes de iniciar
+    
