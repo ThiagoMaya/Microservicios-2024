@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  #SERVICIO DE LA BASE DE DATOS
+  database:
+    build:
+      context: ./bd
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "santiago", "-p12345"]
+      interval: 10s
+      retries: 3
+      timeout: 5s  
+    
+  #SERVICIO DEL SERVIDOR
+  server:
+    build: ./server
+    environment:
+      - DATABASE=database
+    ports:
+      - "80:8080"
+    depends_on:
+       database:
+        condition: service_healthy
+          

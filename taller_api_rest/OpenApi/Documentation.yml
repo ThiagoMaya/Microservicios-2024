@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Gestión de Usuarios API
+  version: 1.0.0
+
+paths:
+  /users:
+    post:
+      summary: Crear un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Datos incorrectos o incompletos
+    get:
+      summary: Obtener todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '404':
+          description: No se encontraron usuarios
+  /users/{id}:
+    get:
+      summary: Obtener un usuario por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Usuario no encontrado
+    put:
+      summary: Actualizar un usuario por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Datos incorrectos o incompletos
+        '404':
+          description: Usuario no encontrado
+    delete:
+      summary: Eliminar un usuario por su ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Usuario eliminado correctamente
+        '404':
+          description: Usuario no encontrado
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        correo:
+          type: string
