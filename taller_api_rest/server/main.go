@@ -18,9 +18,16 @@ func main() {
 
 	router := mux.NewRouter()
 
-	// Manejador para la ruta '/'
-	router.HandleFunc("/", HomeHandler).Methods("GET")
-	router.HandleFunc("/create", handlers.PostUserHandler).Methods("POST")
+	router.HandleFunc("/", handlers.LoginHandler).Methods("POST")
+	router.HandleFunc("/recoverPassword", handlers.ForgotPassword).Methods("GET") //prefix para ruta users
+
+	apiRouter := router.PathPrefix("/users").Subrouter()
+
+	//apiRouter.HandleFunc("/", HomeHandler).Methods("GET")
+	apiRouter.HandleFunc("/", handlers.PostUserHandler).Methods("POST")
+	apiRouter.HandleFunc("/", handlers.GetUsersHandler).Methods("GET")
+	apiRouter.HandleFunc("/{id}", handlers.GetUserByIDHandler).Methods("GET")
+	apiRouter.HandleFunc("/{id}", handlers.DeleteUserHandler).Methods("DELETE")
 
 	server := &http.Server{
 		Addr:    ":8080", // Puerto en el que el servidor escuchará
@@ -36,29 +43,3 @@ func main() {
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "¡Bienvenido a mi API con Go y mux!")
 }
-
-/*
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-    // Verificamos si la solicitud es de tipo POST
-    if r.Method != http.MethodPost {
-        http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-        return
-    }
-
-    // Decodificamos los datos de la solicitud
-    var newUser User
-    err := json.NewDecoder(r.Body).Decode(&newUser)
-    if err != nil {
-        http.Error(w, "Error al decodificar la solicitud", http.StatusBadRequest)
-        return
-    }
-
-    // Aquí puedes realizar la lógica de registro del usuario, como almacenar en una base de datos, etc.
-    // Simplemente para demostración, imprimimos los datos recibidos
-    fmt.Printf("Nuevo usuario registrado:\nUsuario: %s\nContraseña: %s\n", newUser.Username, newUser.Password)
-
-    // Respondemos con un mensaje de éxito
-    w.WriteHeader(http.StatusCreated)
-    fmt.Fprintf(w, "¡Usuario %s registrado correctamente!\n", newUser.Username)
-}
-*/
